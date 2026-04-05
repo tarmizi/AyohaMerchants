@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+
+	<link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/getting-started/introduction/">
+	<script src="https://getbootstrap.com/docs/4.3/getting-started/introduction/"></script>
+
+
+    
+   
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> 
+
+    <script type="text/javascript">
+     
+
+     var billName;
+     var billDescription,  billTo, billEmail, billPhone,billStatus, billpaymentStatus,billpaymentChannel,
+     billpaymentAmount,billpaymentInvoiceNo,billSplitPayment,billSplitPaymentArgs,billpaymentSettlement,
+    billpaymentSettlementDate,SettlementReferenceNo,billPaymentDate,billCode;
+        function FloatPanel_AyohaeWallet_getBillTransaction(billCode, billexternalid) {
+          
+
+            $.ajax({
+
+                url: "https://setkita.com/AYOHA_M_API/PaymentGateway/PaymentGatewayGetBillTransaction?billCode=" + billCode + "&billpaymentStatus=1",
+                success: function (result) {
+                    var jsonString = JSON.stringify(result);
+                  
+// Parse the JSON string
+var jsonData = JSON.parse(jsonString);
+
+// Access the "success" property, which is a string representation of an array
+var innerJsonString = jsonData.success;
+
+// Parse the inner JSON string to get the array of objects
+var jsonArray = JSON.parse(innerJsonString);
+
+// Iterate through the array and access the "billName" property of each object
+for (var i = 0; i < jsonArray.length; i++) {
+    billName = jsonArray[i].billName;
+    billDescription = jsonArray[i].billDescription;
+    billTo= jsonArray[i].billTo;
+    billEmail = jsonArray[i].billEmail;
+    billPhone = jsonArray[i].billPhone;
+    bilbillStatuslTo= jsonArray[i].billStatus;
+    billpaymentStatus = jsonArray[i].billpaymentStatus;
+    billpaymentChannel = jsonArray[i].billpaymentChannel;
+    billpaymentAmount= jsonArray[i].billpaymentAmount;
+    billpaymentInvoiceNo = jsonArray[i].billpaymentInvoiceNo;
+    billSplitPayment = jsonArray[i].billSplitPayment;
+    billSplitPaymentArgs= jsonArray[i].billSplitPaymentArgs;
+    billpaymentSettlement = jsonArray[i].billpaymentSettlement;
+    billpaymentSettlementDate = jsonArray[i].billpaymentSettlementDate;
+    SettlementReferenceNo= jsonArray[i].SettlementReferenceNo;
+
+    billPaymentDate = jsonArray[i].billPaymentDate;
+   // billexternalid = jsonArray[i].billexternalid;
+   // billCode= jsonArray[i].billCode;
+}
+
+
+
+
+
+                    var no=4;
+
+                        var x = setInterval(function() {
+                            no=no-1;
+                            document.getElementById("demo").innerHTML = no;
+                            if (no < 0) {
+                                clearInterval(x);
+
+                              
+                                document.getElementById("demo").innerHTML = "strat:" + billCode;                            
+
+
+                            
+
+
+
+                                $.ajax({
+                                    url: 'https://setkita.com/AYOHA_M_API/PaymentGateWayBillTransaction/PaymentGatewayCreateBilleWalletTopUp',
+                                    dataType: 'json',
+                                    type: 'post',
+                                    contentType: 'application/json',    
+                                    data: JSON.stringify({
+                                        "billName": billName, "billDescription": billDescription, "billTo": billTo, "billEmail": billEmail, "billPhone": billPhone, "billStatus": billStatus, "billpaymentStatus": billpaymentStatus,
+                                        "billpaymentChannel":billpaymentChannel,"billpaymentAmount":billpaymentAmount,"billpaymentInvoiceNo":billpaymentInvoiceNo,"billSplitPayment":billSplitPayment,"billSplitPaymentArgs":billSplitPaymentArgs,"billpaymentSettlement":billpaymentSettlement,
+                                        "billpaymentSettlementDate": billpaymentSettlementDate, "SettlementReferenceNo": SettlementReferenceNo, "billPaymentDate": billPaymentDate, "billExternalReferenceNo": billexternalid, "billCode": billCode
+                                    }),
+                                    processData: false,
+                                    success: function (data, textStatus, jQxhr) {
+                                        document.getElementById("demo").innerHTML = "can close this window now,tq";
+                                        window.close();
+                                      
+                                    },
+                                    error: function (jqXhr, textStatus, errorThrown) {
+                                        alert(errorThrown);
+                                    }
+                                });
+
+
+                            }
+                        }, 1000);
+
+
+                   
+                }
+            });
+
+
+
+        }
+    </script>
+
+    <script type="text/javascript">
+        function extract() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const billcode = urlParams.get('billcode')
+            const billexternalid = urlParams.get('order_id')
+            document.getElementById("demo").innerHTML = billcode;
+            FloatPanel_AyohaeWallet_getBillTransaction(billcode, billexternalid);
+        }
+
+//var no=6;
+  
+//    var x = setInterval(function() {
+//        no=no-1;
+//        document.getElementById("demo").innerHTML = no;
+//        if (no < 0) {
+//            clearInterval(x);
+//            const queryString = window.location.search;         
+//            const urlParams = new URLSearchParams(queryString);
+//            const billcode = urlParams.get('billcode')
+//            document.getElementById("demo").innerHTML = billcode;
+//            FloatPanel_AyohaeWallet_getBillTransaction(billcode);
+
+
+//        }
+//    }, 1000);
+    </script>
+ 
+</head>
+<body onload="extract()">
+	<div class="jumbotron text-center">
+        <h1 class="display-3">Ayoha eWallet TopUp-Success!</h1>
+        <p class="lead"><strong>Please wait...</strong><br />Thank You!</p>
+        <hr>
+        <p id="demo"></p>
+      </div>
+</body>
+</html>
